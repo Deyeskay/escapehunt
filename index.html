@@ -1473,6 +1473,7 @@ function checkCode(){
     const msg =
         document.getElementById("msg");
 
+    // CASE INSENSITIVE CHECK
     if(
         input.toLowerCase()
         ===
@@ -1505,8 +1506,36 @@ function checkCode(){
         msg.className =
             "message error";
 
-        msg.innerHTML =
-            "Wrong Secret Code";
+        // =========================================
+        // AUTO DETECT CODE TYPE + LENGTH
+        // =========================================
+
+        const actualCode =
+            current.code.trim();
+
+        const isNumber =
+            /^\d+$/.test(actualCode);
+
+        let toastText = "";
+
+        if(isNumber){
+
+            toastText =
+                `Wrong Secret Code<br>
+                <small>
+                Code is ${actualCode.length} digit number
+                </small>`;
+
+        }else{
+
+            toastText =
+                `Wrong Secret Code<br>
+                <small>
+                Code is ${actualCode.length} letter alphabet
+                </small>`;
+        }
+
+        msg.innerHTML = toastText;
     }
 }
 
