@@ -397,63 +397,31 @@ let timerInterval = null;
    MUSIC
 ========================================================= */
 
-let audioCtx = null;
-let osc1 = null;
-let osc2 = null;
+let bgMusic = new Audio("bg.mp3");
+
+bgMusic.loop = true;
+bgMusic.volume = 0.4;
 
 function startMusic(){
 
-    if(audioCtx) return;
+    bgMusic.play()
+    .then(()=>{})
+    .catch(err=>{
 
-    audioCtx =
-        new(window.AudioContext ||
-        window.webkitAudioContext)();
-
-    const gain =
-        audioCtx.createGain();
-
-    gain.gain.value = 0.015;
-
-    osc1 =
-        audioCtx.createOscillator();
-
-    osc2 =
-        audioCtx.createOscillator();
-
-    osc1.type = "sine";
-    osc2.type = "triangle";
-
-    osc1.frequency.value = 55;
-    osc2.frequency.value = 82;
-
-    osc1.connect(gain);
-    osc2.connect(gain);
-
-    gain.connect(audioCtx.destination);
-
-    osc1.start();
-    osc2.start();
+        console.log("Music blocked:", err);
+    });
 }
 
 function stopMusic(){
 
-    try{
+    bgMusic.pause();
 
-        osc1?.stop();
-        osc2?.stop();
-
-        audioCtx?.close();
-
-    }catch(e){}
-
-    osc1 = null;
-    osc2 = null;
-    audioCtx = null;
+    bgMusic.currentTime = 0;
 }
 
 function toggleMusic(){
 
-    if(audioCtx){
+    if(!bgMusic.paused){
 
         stopMusic();
 
@@ -1259,7 +1227,7 @@ function showStartScreen(){
             onclick="toggleMusic()"
         >
             ${
-                audioCtx
+                !bgMusic.paused
                 ? "🔇 Music OFF"
                 : "🔊 Music ON"
             }
@@ -1276,6 +1244,7 @@ function startGame(){
         "true"
     );
 
+	bgMusic.load();
     startMusic();
 
     loadGame();
@@ -1360,7 +1329,7 @@ function loadGame(){
                 onclick="toggleMusic()"
             >
                 ${
-                    audioCtx
+                    !bgMusic.paused
                     ? "🔊"
                     : "🔇"
                 }
